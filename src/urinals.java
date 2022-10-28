@@ -1,4 +1,6 @@
 //Author - Heet Punjawat
+import java.io.*;
+import java.net.URL;
 import java.util.*;
 
 public class urinals {
@@ -46,15 +48,53 @@ public class urinals {
         return count;
     }
 
+    public  String readFile() throws IOException {
+        StringBuilder sb = new StringBuilder();
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        URL fileURL = classLoader.getResource("urinal.dat");
+        if(fileURL != null)
+        {
+            File file = new File(fileURL.getFile());
+            InputStream in = new FileInputStream(file);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line + System.lineSeparator());
+            }
+
+        }
+
+        return sb.toString();
+
+    }
+
+    public static void fileProcess() throws IOException {
+        urinals urinals = new urinals();
+        String ans  = urinals.readFile();
+        int i = 0;
+        String filename = "rule";
+        File f = new File(filename + ".txt");
+        while (f.exists()) {
+            i += 1;
+            f = new File(filename + String.valueOf(i) + ".txt");
+        }
+        FileWriter output;
+        if (i == 0){
+            output = new FileWriter(filename + ".txt");
+        }
+        else {
+            output = new FileWriter(filename + String.valueOf(i) + ".txt");
+        }
+        ans += "\n";
+        output.write(ans);
+        output.close();
+    }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Enter the string");
-        String userInput = scanner.nextLine();
-        System.out.println("The string is: " + userInput);
-
-
-
+        try {
+            fileProcess();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
